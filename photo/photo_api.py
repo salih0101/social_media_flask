@@ -9,11 +9,8 @@ photo_bp = Blueprint('photo', __name__, url_prefix='/photo')
 
 @photo_bp.route('/', methods=['GET'])
 def get_all_photo():
-    all_photos = get_all_photo_db()
-
-    if all_photos:
-        return {'status': 1, 'message': all_photos}
-    return {'status': 0, 'message': 'Not found'}
+    all_photos = get_all_photo_db()  # Получаем все фотографии
+    return {'status': 1, 'message': all_photos}  # Выдаем результат
 
 
 # Публикация фотографии
@@ -40,7 +37,10 @@ def get_exact_user_photo(user_id: int):
 
 @photo_bp.route('/<int:photo_id>', methods=['GET'])
 def get_exact_photo(photo_id: int):
-    pass
+    exact_photo = get_exact_user_photo(photo_id)  # Получаем фото по его ID
+    if exact_photo:
+        return {'status': 1, 'message': exact_photo}
+    return {'status': 0, 'message': 'Not found'}  # Если фотографий нет
 
 
 # Изменить определенное фото пользователя
