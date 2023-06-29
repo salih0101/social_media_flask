@@ -1,5 +1,6 @@
 from flask import Blueprint
-from database.postservice import get_all_posts_db, get_exact_post_db, delete_exact_post_db, add_comment_post_db
+from database.postservice import get_all_posts_db, get_exact_post_db, delete_exact_post_db, \
+    add_comment_post_db, change_user_comment_db, delete_comment_db
 
 comment_bp = Blueprint('comment', __name__, url_prefix='/comment')
 
@@ -29,13 +30,19 @@ def publish_comment(post_id: int, comment_user_id: int, comment_text: str):
 
 # Изменить комментарий отправленный
 
-@comment_bp.route('/<int:comment_id>/<int:comment_user_id>', methods=['POST'])
-def change_comment(comment_user_id: int, comment_id: int):
-    pass
+@comment_bp.route('/<int:comment_user_id>/<int:comment_id>', methods=['PUT'])
+def change_comment(comment_user_id: int, comment_id: int, comment_text: str):
+    change_comment = change_user_comment_db(comment_user_id, comment_id, comment_text)
+    if change_comment:
+        return {'status': 1, 'message': 'Comment changed'}
+    return {'status': 0, 'message': 'Not found'}
 
 
 # Удаления определенное фото пользователя
 
-@comment_bp.route('/<int:comment_id>/<int:comment_user_id>', methods=['DELETE'])
-def delete_comment(user_id: int, photo_id: int, comment_user_id: int):
-    pass
+@comment_bp.route('/<int:comment_user_id>/<int:comment_id>', methods=['DELETE'])
+def delete_comment(comment_user_id: int, comment_id: int):
+    delete_comment = delete_comment_db(comment_user_id, comment_id)
+    if delete_comment:
+        return {'status': 1, 'message': 'Comment deleted'}
+    return {'status': 0, 'message': 'Not found'}
